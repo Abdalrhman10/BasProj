@@ -6,7 +6,7 @@ class Artikel extends Database{
 
 	public function insertArtikel($conn, $naam, $inkoop, $verkoop, $voorraad, $minVoorraad, $maxVoorraad, $locatie, $levId){
 
-        $sql = "INSERT INTO artikel (artOmschrijving, artInkoop, artVerkoop, arVoorraad, artMinVoorraad, artMaxVoorraad, artLocatie, levid) VALUES ('$naam', '$inkoop', '$verkoop', '$voorraad', '$minVoorraad', '$maxVoorraad',$locatie, '$levId')";
+        $sql = "INSERT INTO klant (artOmschrijving, artlnkoop, artVerkoop, arVoorraad, artMinVoorraad, artMaxVoorraad, artLocatie, levid) VALUES ('$naam', '$inkoop', '$verkoop', '$voorraad', '$minVoorraad', '$maxVoorraad', '$levId')";
 
 		$stmt = self::$conn->prepare($sql);
 
@@ -25,81 +25,75 @@ class Artikel extends Database{
 
 	public function getArtikelen(){
 
-		$sql = "SELECT DISTINCT artOmschrijving FROM artikel";
+		$sql = "SELECT DISTINCT klantnaam FROM klant";
 
 		$stmt = self::$conn->query($sql);
 
-		$artikel = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        $klanten = $stmt->fetchALL(PDO::FETCH_ASSOC);
 
-   	   return $artikel;
+   	   return $klanten;
 	}
 
-	public function getArtiekl($conn,$naam){
+	public function getArtiekl($klant){
 
-		$sql = "SELECT * FROM artikel WHERE artOmschrijving = '$naam'";
+		$sql = "SELECT * FROM klant WHERE klantnaam = '$klant'";
 
 		$stmt = self::$conn->query($sql);
 
-        $artikel = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        $klanten = $stmt->fetchALL(PDO::FETCH_ASSOC);
 
-   	   return $artikel;
+   	   return $klanten;
 	}
 
-	public function getIds($conn){
+	public function getIds(){
 
-		$sql = "SELECT artid FROM artikel";
+		$sql = "SELECT klantid FROM klant";
 
 		$stmt = self::$conn->query($sql);
 
-        $artikel = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        $klanten = $stmt->fetchALL(PDO::FETCH_ASSOC);
 
-   	   return $artikel;
+   	   return $klanten;
 	}
 
-	public function getId($conn,$id){
+	public function getId($id){
 
-		$sql = "SELECT * FROM artikel WHERE `artid` = '$id'";
+		$sql = "SELECT * FROM klant WHERE `klantid` = '$id'";
 
 		$stmt = self::$conn->query($sql);
 
-        $artikel = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        $klanten = $stmt->fetchALL(PDO::FETCH_ASSOC);
 
-   	   return $artikel;
+   	   return $klanten;
 	}
 
-	public function deleteKlant($nr){
 
-		try{
-			$sql = "DELETE FROM `Klant` WHERE `klantid` = '$nr'";
-			$stmt = self::$conn->prepare($sql);
-        	$stmt->execute();
 
-        	echo '<script>alert("Klant verwijderd")</script>';
+	public function deleteArtikel($artId){
 
-       	 	echo "<script> location.replace('selectklant.php'); </script>";
-   	 	} catch(Exception) {
-   	 		echo '<script>alert("Er staat nog een verkooporder open onder deze klant")</script>';
-   	 	}
+		$sql = "DELETE FROM artikel WHERE artid = '$artId'";
+		$stmt = self::$conn->prepare($sql);
+        $stmt->execute();
  	}
 
 	public function showTable($lijst){
 		
 		
 		echo "<table>";
-		echo "<tr><th>ID</th><th>Naam</th><th>Verkoop</th><th>Voorraad</th><th>MinVoorraad</th><th>MaxVoorraad</th><th>Locatie</th></th></tr>";
+		echo "<tr><th>ID</th><th>Naam</th><th>Inkoop</th><th>Verkoop</th><th>Voorraad</th><th>MinVoorraad</th><th>MaxVoorraad</th><th>Locatie</th><th>levId</th></th></tr>";
 		foreach($lijst as $row) {
 			
 			
 			echo "<tr>";
 			echo "<td>" . $row["artid"] . "</td>";
 			echo "<td>" . $row["artOmschrijving"] . "</td>";
-			//echo "<td>" . $row["artInkoop"] . "</td>";
+			echo "<td>" . $row["artlnkoop"] . "</td>";
 			echo "<td>" . $row["artVerkoop"] . "</td>";
 			echo "<td>" . $row["artVoorraad"] . "</td>";
 			echo "<td>" . $row["artMinVoorraad"] . "</td>";
 			echo "<td>" . $row["artMaxVoorraad"] . "</td>";
 			echo "<td>" . $row["artLocatie"] . "</td>";
-			//echo "<td>" . $row["levid"] . "</td>";
+			echo "<td>" . $row["levid"] . "</td>";
 			echo "</tr>";
 			
 		

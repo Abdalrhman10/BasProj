@@ -28,11 +28,12 @@ class Database {
 		}    
     }
 
-    //public function executeQuery($query) {
-    //    return self::$conn->query($query);
-    //}
-
-    //public function fetchAll($result) {
-    //    return $result->fetchAll();
-    //}
+	public function searchCustomerById($klantId) {
+        $query = "SELECT * FROM klant WHERE klantid = :id";
+        $stmt = self::$conn->prepare($query);
+        $stmt->bindParam(':id', $klantId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
 }

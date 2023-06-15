@@ -1,6 +1,6 @@
 <?php
 
-include 'Database.php';
+require_once 'Database.php';
 
 class Verkoop extends Database{
 
@@ -8,7 +8,7 @@ class Verkoop extends Database{
 
 		$datum = date("Y-m-d");
 
-        $sql = "INSERT INTO verkoopoders (klantid, artid, verkOrdDatum, verkOrdBestAantal, verkOrdStatus) VALUES ('$klantId', '$artId', '$datum', '$aantal', 1 )";
+        $sql = "INSERT INTO verkoopoder (klantid, artid, verkOrdDatum, verkOrdBestAantal, verkOrdStatus) VALUES ('$klantId', '$artId', '$datum', '$aantal', 1 )";
 
 		$stmt = self::$conn->prepare($sql);
 
@@ -50,40 +50,48 @@ class Verkoop extends Database{
 		echo "</table>";
 	}
 
-	public function getKlanten($conn){
+	public function getOrders(){
 
-		$sql = "SELECT DISTINCT klant.klantnaam FROM klant INNER JOIN verkoopoders ON klant.klantid = verkoopoders.klant";
+		$sql = "SELECT * FROM verkoopoder";
 
 		$stmt = self::$conn->query($sql);
 
-        $klanten = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+   	   return $orders;
+	}
+
+	public function getKlant($data){
+
+		$sql = "SELECT * FROM inkooporder WHERE $data =" ;
+
+		$stmt = self::$conn->prepare($sql);
+
+        $stmt->execute();
+	}
+
+	public function getKlanten(){
+
+		$sql = "SELECT DISTINCT klant.klantnaam FROM klant INNER JOIN verkoopoder ON klant.klantid = verkoopoder.klantid";
+
+		$stmt = self::$conn->query($sql);
+
+        $klanten = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
    	   return $klanten;
 	}
 
-	public function getKlant($conn, $data){
+	public function deleteVerkoop($klantid){
 
-		$sql = "SELECT * FROM inkooporders WHERE $data =" ;
-
-		$stmt = self::$conn->prepare($sql);
-
-        $stmt->execute();
-	}
-
-	public function deleteVerkoop($nr, $conn){
-
-		$sql = "DELETE FROM verkooporders WHERE verkOrdId = '$nr'";
+		$sql = "DELETE FROM verkoopoder WHERE klantid = '$klantid'";
 		$stmt = self::$conn->prepare($sql);
         $stmt->execute();
 
-        echo '<script>alert("Verkooporder verwijderd")</script>';
-
-        echo "<script> location.replace('selectVerkoop.php'); </script>";
  	}
 
- 	public function updateVerkoop($id, $klantid, $artId, $verkOrdDatum, $verkOrdStatus, $conn){
+ 	public function updateVerkoop($id, $klantid, $artId, $verkOrdDatum, $verkOrdStatus){
 
- 		$sql = "UPDATE verkooporders SET Klantid = '$klantid', artId = '$artId', verkOrdDatum = '$verkOrdDatum', verkOrdStatus = '$verkOrdStatus' WHERE verkOrdId  = '$id'";
+ 		$sql = "UPDATE verkoopoder SET Klantid = '$klantid', artid = '$artId', verkOrdDatum = '$verkOrdDatum', verkOrdStatus = '$verkOrdStatus' WHERE verkOrdId  = '$id'";
 
 		$stmt = self::$conn->prepare($sql);
 
@@ -99,7 +107,7 @@ class Verkoop extends Database{
 			
 			
 			echo "<tr>";
-			
+			echo "<td>" . $row["verkOrdId"] . "</td>";
 			echo "<td>" . $row["klantid"] . "</td>";
 			echo "<td>" . $row["artid"] . "</td>";
 			echo "<td>" . $row["verkOrdDatum"] . "</td>";
@@ -112,5 +120,20 @@ class Verkoop extends Database{
 		}
 		echo "</table>";
 	}
+
+	public function getOrderList() {
+        $query = "SELECT * FROM verkoopoder";
+        $stmt = self::$conn->query($query);
+        return $stmt->fetchAll();
+    }
+    
+    public function updateOrderStatus($orderId, $statusId) {
+        $query = "UPDATE verkoopoder SET verkOrdStatus = :status WHERE klantid = :id";
+        $stmt = self::$conn->prepare($query);
+        $stmt->bindParam(':status', $statusId, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $orderId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+	
 }
-?>

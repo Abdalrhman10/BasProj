@@ -1,17 +1,17 @@
 <?php
-include "Database.php";
+include_once 'Database.php';
 class InkooporderForm extends Database
 {
     public function getLeveranciers() {
-        $query = "SELECT * FROM leveranciers";
-        $result = self::$conn->executeQuery($query);
-        return self::$conn->fetchAll($result);
+        $query = "SELECT * FROM leverancier";
+        $result = self::$conn->query($query);
+        return $result->fetchAll();
     }
 
     public function getArtikelen() {
         $query = "SELECT * FROM artikel";
-        $result = self::$conn->executeQuery($query);
-        return self::$conn>fetchAll($result);
+        $result = self::$conn->query($query);
+        return $result->fetchAll();
     }
 
     public function generateForm() {
@@ -24,7 +24,7 @@ class InkooporderForm extends Database
         echo "<br><label for='leverancier'>Leverancier:</label><br>";
         echo "<br><select name='leverancier' id='leverancier'><br>";
         foreach ($leveranciers as $leverancier) {
-            echo "<br><option value='{$leverancier['levid']}'>{$leverancier['levnaam']}</option><br>";
+            echo "<br><option value='{$leverancier['levid']}'>{$leverancier['levNaam']}</option><br>";
         }
         echo "<br></select>";
 

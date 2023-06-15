@@ -1,6 +1,6 @@
 <?php 
 
-include 'Database.php';
+include_once 'Database.php';
 
 class Inkoop extends Database{
 
@@ -8,7 +8,7 @@ class Inkoop extends Database{
 
 		$datum = date("Y-m-d");
 
-        $sql = "INSERT INTO inkooporders (levid, artid, inkOrdDatum, inkOrdBestAantal, inkOrdStatus) VALUES ('$levId', '$artId', '$datum', '$aantal', 1 )";
+        $sql = "INSERT INTO inkooporder (levid, artid, inkOrdDatum, inkOrdBestAantal, inkOrdStatus) VALUES ('$levId', '$artId', '$datum', '$aantal', 1 )";
 
 		$stmt = self::$conn->prepare($sql);
 
@@ -32,7 +32,7 @@ class Inkoop extends Database{
 
 	public function deleteInkoop($conn, $data){
 
-		$sql = "DELETE * FROM inkooporders WHERE inkOrdId = '$data'";
+		$sql = "DELETE * FROM inkooporder WHERE inkOrdId = '$data'";
 
 		$stmt = self::$conn->prepare($sql);
 
